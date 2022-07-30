@@ -1,0 +1,393 @@
+
+/* Xolonium GPL Font, with embedding exception */
+
+@font-face {
+    font-family: 'Xolonium';
+    src: url('fonts/xolonium-regular.otf');
+}
+
+*[class^="icon-"]::before,
+*[class^="icon-"]::after {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon', 'Xolonium', 'SimKai' !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-previous::before {
+    content: '< ';
+}
+.icon-next::after {
+    content: ' >';
+}
+
+.icon-item_strength::before {
+    content: "力";
+}
+.icon-item_strength {
+    color: #8080FF;
+}
+.icon-item_shield::before {
+    /**
+     * this entity isn't counted, but I put here anyway
+     * and this character indeed means "life"
+     */
+    content: "寿";
+}
+.icon-item_shield {
+    color: #FF8080;
+}
+
+/* Most are copied from https://github.com/z/xonotic-map-repository-web/, MIT/Expat License */
+
+@font-face {
+    font-family: 'icomoon';
+    src: url('fonts/icomoon.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* appeared in code but no definition here */
+.icon-world,
+.icon-gametype_arena,
+.icon-item_invincible {
+    display: none;
+}
+
+.icon-info_player_team1::before,
+.icon-info_player_team2::before,
+.icon-info_player_team3::before,
+.icon-info_player_team4::before {
+    content: "+";
+}
+
+.icon-gametype_as::before {
+    content: "\e900";
+}
+.icon-gametype_ca::before {
+    content: "\e901";
+}
+.icon-gametype_ctf::before {
+    content: "\e902";
+}
+.icon-gametype_cts::before {
+    content: "\e903";
+}
+.icon-gametype_dm::before,
+.icon-info_player_deathmatch::before {
+    content: "\e904";
+}
+.icon-gametype_dom::before {
+    content: "\e905";
+}
+.icon-gametype_duel::before {
+    content: "\e906";
+}
+.icon-gametype_ft::before {
+    content: "\e907";
+}
+.icon-gametype_inf::before {
+    content: "\e908";
+}
+.icon-gametype_inv::before {
+    content: "\e909";
+}
+.icon-gametype_jb::before {
+    content: "\e90a";
+}
+.icon-gametype_ka::before {
+    content: "\e90b";
+}
+.icon-gametype_kh::before {
+    content: "\e90c";
+}
+.icon-gametype_lms::before {
+    content: "\e90d";
+}
+.icon-gametype_nb::before {
+    content: "\e90e";
+}
+.icon-gametype_ons::before {
+    content: "\e90f";
+}
+.icon-gametype_rc::before {
+    content: "\e910";
+}
+.icon-gametype_tdm::before {
+    content: "\e911";
+}
+.icon-gametype_vip::before {
+    content: "\e912";
+}
+.icon-item_health_small::before {
+    content: "\e913";
+}
+.icon-item_health_medium::before {
+    content: "\e914";
+}
+.icon-item_health_large::before {
+    content: "\e915";
+}
+.icon-item_health_mega::before {
+    content: "\e916";
+}
+.icon-item_jetpack::before {
+    content: "\e917";
+}
+.icon-item_armor_big::before {
+    content: "\e918";
+}
+.icon-item_armor_large::before {
+    content: "\e919";
+}
+.icon-item_armor_medium::before {
+    content: "\e91a";
+}
+.icon-item_armor_small::before {
+    content: "\e91b";
+}
+.icon-flag::before, .icon-item_flag_team1::before, .icon-item_flag_team2::before, .icon-item_flag_team3::before, .icon-item_flag_team4::before, .icon-item_flag_neutral::before  {
+    content: "\e91c";
+}
+.icon-item_bullets::before {
+    content: "\e91d";
+}
+.icon-item_cells::before {
+    content: "\e91e";
+}
+.icon-item_fuel::before {
+    content: "\e91f";
+}
+.icon-item_plasma::before {
+    content: "\e920";
+}
+.icon-item_rockets::before {
+    content: "\e921";
+}
+.icon-item_shells::before {
+    content: "\e922";
+}
+.icon-item_supercells::before {
+    content: "\e923";
+}
+.icon-weapon_arc::before {
+    content: "\e924";
+}
+.icon-weapon_crylink::before {
+    content: "\e925";
+}
+.icon-weapon_electro::before {
+    content: "\e926";
+}
+.icon-weapon_fireball::before {
+    content: "\e927";
+}
+.icon-weapon_flak::before {
+    content: "\e928";
+}
+.icon-weapon_grenadelauncher::before {
+    content: "\e929";
+}
+.icon-weapon_hagar::before {
+    content: "\e92a";
+}
+.icon-weapon_hlac::before {
+    content: "\e92b";
+}
+.icon-weapon_hmg::before {
+    content: "\e92c";
+}
+.icon-weapon_hook::before {
+    content: "\e92d";
+}
+.icon-weapon_blaster::before {
+    content: "\e92e";
+}
+.icon-weapon_minelayer::before {
+    content: "\e92f";
+}
+.icon-weapon_vaporizer::before {
+    content: "\e930";
+}
+.icon-weapon_vortex::before {
+    content: "\e931";
+}
+.icon-weapon_porto::before {
+    content: "\e932";
+}
+.icon-weapon_rifle::before {
+    content: "\e933";
+}
+.icon-weapon_devastator::before {
+    content: "\e934";
+}
+.icon-weapon_rpc::before {
+    content: "\e935";
+}
+.icon-weapon_seeker::before {
+    content: "\e936";
+}
+.icon-weapon_shockwave::before {
+    content: "\e937";
+}
+.icon-weapon_shotgun::before {
+    content: "\e938";
+}
+.icon-weapon_tuba::before {
+    content: "\e939";
+}
+.icon-weapon_machinegun::before {
+    content: "\e93a";
+}
+
+/* item colors */
+.icon-weapon_arc {
+    color: #C3EEFF;
+}
+
+.icon-weapon_blaster {
+    color: #963043;
+}
+
+.icon-weapon_crylink {
+    color: #F580F7;
+}
+
+.icon-weapon_devastator {
+    color: #ECD262;
+}
+
+.icon-weapon_electro {
+    color: #69A0E7;
+}
+
+.icon-weapon_fireball {
+    color: #FFB27D;
+}
+
+.icon-weapon_flak {
+    color: #FFF371;
+}
+
+.icon-weapon_grenadelauncher {
+    color: #FFA789;
+}
+
+.icon-weapon_hagar {
+    color: #FFC37E;
+}
+
+.icon-weapon_hlac {
+    color: #FFE287;
+}
+
+.icon-weapon_hmg {
+    color: #FFA788
+}
+
+.icon-weapon_hook {
+    color: #417D2F;
+}
+
+.icon-weapon_machinegun {
+    color: #8CE54A;
+}
+
+.icon-weapon_minelayer {
+    color: #AD2D29;
+}
+
+.icon-weapon_porto {
+    color: #9FE1FF;
+}
+
+.icon-weapon_rifle {
+    color: #FFBF7C;
+}
+
+.icon-weapon_rpc {
+    color: #FFFF82;
+}
+
+.icon-weapon_seeker {
+    color: #FF949D;
+}
+
+.icon-weapon_shockwave {
+    color: #B0FFD0;
+}
+
+.icon-weapon_shotgun {
+    color: #95AFBE;
+}
+
+.icon-weapon_tuba {
+    color: #E5CF5D;
+}
+
+.icon-weapon_vaporizer {
+    color: #ACA0E9;
+}
+
+.icon-weapon_vortex {
+    color: #73BACA;
+}
+
+.icon-item_health_mega, .icon-item_health_large, .icon-item_health_medium, .icon-item_health_small {
+    color: #D85F4E;
+}
+
+.icon-item_armor_big, .icon-item_armor_large, .icon-item_armor_medium, .icon-item_armor_small {
+    color: #4B9B25;
+}
+
+.icon-item_shells {
+    color: #BECBD3;
+}
+
+.icon-item_rockets {
+    color: #E1B08D;
+}
+
+.icon-item_plasma {
+    color: #CE9DD4;
+}
+
+.icon-item_cells {
+    color: #B1FFFF;
+}
+
+.icon-item_bullets {
+    color: #B1D887;
+}
+
+.icon-item_flag_team1,
+.icon-info_player_team1 {
+    color: red;
+}
+
+.icon-item_flag_team2,
+.icon-info_player_team2 {
+    color: #0080FF;
+}
+
+.icon-item_flag_team3,
+.icon-info_player_team3 {
+    color: #FFFF0F;
+}
+
+.icon-item_flag_team4,
+.icon-info_player_team4 {
+    color: #FF0FFF;
+}
+
+.icon-item_flag_neutral {
+    color: grey;
+}

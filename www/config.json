@@ -1,0 +1,42 @@
+{
+    "upstream": {
+        "mapshots": "http://xonotic.fps.gratis/resources/mapshots/",
+        "download": "http://dl.xonotic.fps.gratis/"
+    },
+    "load": {
+        "meta_url": "maps-meta.json",
+        "data1_url": "maps-data1.bin",
+        "data2_url": "maps-data2.bin",
+        "maps_json": ""
+    },
+    "entity_blacklist": [
+        "world",
+        "item_invincible",
+        "info_player_team2",
+        "info_player_team3",
+        "info_player_team4",
+        "item_bullets",
+        "item_cells",
+        "item_minst_cells",
+        "item_rockets",
+        "item_shells",
+        "item_health_small",
+        "item_health_medium",
+        "item_armor_small",
+        "item_armor_medium"
+    ],
+    "gamemode_blacklist": [
+        "all",
+        "arena",
+        "cq",
+        "dotc",
+        "inf",
+        "inv",
+        "jb",
+        "ph",
+        "rune",
+        "snafu",
+        "td",
+        "vip"
+    ]
+}
