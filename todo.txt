@@ -1,15 +1,13 @@
 
 + Get feedback about what's a good size/time threshold for filtering maps
-+ Get feedback about if I've misunderstood some of the abbreviations (something like dm, ctf, ...)
 + Get feedback about other desired features
 + Clean up code
-+ Write dev doc
 + Write the binary format "spec"
 + If required & possible, make mobile layout better
 
+? Write dev doc
 ? Keep the JSON order by using other implementation/language
   Go doesn't keep it and it causes some problem. But Go is quick.
 ? Omit some unused keys in the data
 ? Split SHA1 sums to another binary file, and request with Range header when required
 ? A "integrated" mode, serve on your own machine, download maps, verify shasum and directly install with backend
-? Extract some translations from Xonotic data files

@@ -33,6 +33,8 @@ class I18n {
         if (!this.database[language])
             this.database[language] = {};
         this.language = language;
+        if (typeof document !== 'undefined')
+            document.querySelector('html').lang = language;
     }
     /**
      * Add data as corresponding language,

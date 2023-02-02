@@ -1,57 +1,30 @@
-{
-    "Language": "English (US)",
-    "xonotic-map-repo": "Xonotic Map Repo",
-    "toggle-view": "Toggle View",
-    "by-0": "By {0}",
-    "unknown": "Unknown",
-    "download": "Download",
-    "sort": "Sort",
-    "filter": "Filter",
-    "random-pick": "Random Pick",
-    "previous": "Previous",
-    "next": "Next",
-    "loading": "Loading...",
-    "ok": "OK",
-    "apply": "apply",
-    "cancel": "Cancel",
-    "yes": "Yes",
-    "no": "No",
-    "keyword-": "Keyword:",
-    "file-size-": "File Size:",
-    "less-than-0": "Less than {0}",
-    "more-than-0": "More than {0}",
-    "0-to-1": "{0} to {1}",
-    "any": "Any",
-    "time-": "Time:",
-    "date-": "Date:",
-    "past-0-year": {
-        "single": "Past {0} Year",
-        "multiple": "Past {0} Years"
-    },
-    "older-than-0-year": {
-        "single": "Older than {0} Year",
-        "multiple": "Older than {0} Years"
-    },
-    "with-mapshot": "With Mapshot",
-    "with-description": "With Description",
-    "with-waypoint": "With Waypoint",
-    "gamemodes-": "Gamemodes:",
-    "sort-by-": "Sort By:",
-    "invert-order": "Invert Order",
-    "share-search-result": "Share Search Result",
-    "copy-and-share-this-link": "Copy and share this link",
-    "search-sort-filter": "Search/Sort/Filter",
-    "other-": "Other:",
-    "name": "Name",
-    "title": "Title",
-    "map-file-size": "Map File Size",
-    "time": "Time",
-    "date": "Date",
-    "random": "Random",
-    "gamemodes": "Gamemodes",
-    "Entities": "Entities",
-    "showing-maps-0-to-1-of-total-2": "Showing maps {0} to {1} of total {2}",
-    "no-data": "No Data",
+
+// rough script for taking some translations from official source
+
+const xondatadir = Deno.args[0];
+
+if (xondatadir === undefined) {
+    console.error(`Pass a directory that contains Xonotic translation resources, then re-run.
+    It's Typically \`xonotic.git/data/xonotic-data.pk3dir\`.`);
+    Deno.exit(1);
+}
+
+// en_US is source; zh will be manually managed and converted
+const blacklist_lang = new Set(['en_US', 'zh_CN', 'zh_HK', 'zh_TW']);
+const languages = [];
+
+function trimstr(str: string, start: string, end: string) {
+    return str.slice(start.length, str.length - end.length);
+}
+
+for await (const entry of Deno.readDir(xondatadir)) {
+    if (entry.isFile && entry.name.startsWith('common.') && entry.name.endsWith('.po')) {
+        const langname = trimstr(entry.name, 'common.', '.po');
+        if (!blacklist_lang.has(langname)) languages.push(langname);
+    }
+}
+
+const langkeys = {
     "all": "All",
     "as": "Assault",
     "arena": "Arena",
@@ -105,7 +78,7 @@
     "weapon_grenadelauncher": "Mortar",
     "weapon_hagar": "Hagar",
     "weapon_hook": "Hook",
-    "weapon_machinegun": "Machine Gun",
+    "weapon_machinegun": "MachineGun",
     "weapon_minelayer": "Mine Layer",
     "weapon_rifle": "Rifle",
     "weapon_seeker": "T.A.G. Seeker",
@@ -113,4 +86,25 @@
     "weapon_vaporizer": "Vaporizer",
     "weapon_vortex": "Vortex",
     "world": "World"
+};
+
+for await (const lang of languages) {
+    const json_path = `${lang.replaceAll('_', '-')}.json`;
+    const json = JSON.parse(await Deno.readTextFile(json_path).catch(_ => '{}'));
+    const po_path = `${xondatadir}/common.${lang}.po`;
+    const lines = (await Deno.readTextFile(po_path)).split('\n');
+    if (!json['Language']) json['Language'] = lang;
+    for (const entitykey in langkeys) {
+        //@ts-ignore: entitykey: keyof langkeys
+        const sourcekey: string = langkeys[entitykey];
+        const idindex = lines.findIndex(value => trimstr(value, 'msgid "', '"').toLowerCase() === sourcekey.toLowerCase());
+        if (idindex === -1) {
+            if (json[entitykey]) json[entitykey] = '';
+            continue;
+        }
+        const str = trimstr(lines[idindex + 1], 'msgstr "', '"');
+        if (str !== '') json[entitykey] = str;
+    }
+    if (Object.keys(json).length < Object.keys(langkeys).length / 3) continue;
+    await Deno.writeTextFile(json_path, JSON.stringify(json, void 0, 4));
 }

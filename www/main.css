@@ -26,7 +26,7 @@
 body {
     color: var(--fore-color);
     background-color: var(--back-color);
-    font-family: 'Xolonium', 'Noto Sans', 'Segoe UI', sans-serif;
+    font-family: 'Xolonium', 'Noto Sans', 'Segoe UI', 'TsangerYuYangT', sans-serif;
     margin: 0;
     font-size: var(--font-size);
     cursor: var(--cursor);
@@ -114,6 +114,11 @@ header>#menu>a {
     text-decoration: none;
     display: inline-block;
     padding-right: 1em;
+}
+
+p#share-link>pre {
+    white-space: pre-wrap;
+    user-select: all;
 }
 
 #dialog {
@@ -325,8 +330,9 @@ hr {
     max-width: 100%;
 }
 .form label {
-    padding: 0 1em;
+    padding: 0 0.5em;
     white-space: nowrap;
+    min-width: 8em;
 }
 
 .table-wrap {

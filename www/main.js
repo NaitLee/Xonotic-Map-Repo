@@ -5,9 +5,10 @@
 'use strict';
 
 /** @type {Config} */
-var Config;
+let Config;
 
 /** @type {any} */
+// deno-lint-ignore no-var
 var i18n;
 if (i18n === undefined) i18n = (s, t) => s + ',' + t.join(',');
 
@@ -19,7 +20,7 @@ const LazyImage = (function() {
         for (const entry of entries)
             if (entry.isIntersecting) {
                 /** @type {any} */
-                let img = entry.target;
+                const img = entry.target;
                 img.src = img.dataset.src;
                 img.dataset.src = '';
                 img.className = '';
@@ -102,16 +103,14 @@ class Item {
         types = types.filter(s => !Config.gamemode_blacklist.includes(s));
         const children = this.#gametypes.children;
         for (let i = 0; i < types.length; i++) {
-            let type = types[i];
-            let type_i18n = i18n(type);
-            let classname = 'icon-gametype_' + type;
+            const type = types[i];
+            const type_i18n = i18n(type);
+            const classname = 'icon-gametype_' + type;
             children.length > i
-                // @ts-ignore
                 ? (children[i].className = classname, children[i].title = type_i18n)
                 : this.#gametypes.appendChild(e('i .' + classname + ' title=' + type_i18n.replace(/ /g, '+')));
         }
         for (let i = types.length; i < children.length; i++) {
-            // @ts-ignore
             children[i].innerText = children[i].title = children[i].className = '';
         }
         this._gametypes = types;
@@ -122,18 +121,16 @@ class Item {
     setEntities(entities) {
         const children = this.#entities.children;
         let count = 0;
-        for (let key in entities) {
+        for (const key in entities) {
             if (entities[key] === 0 || Config.entity_blacklist.includes(key)) continue;
-            let key_i18n = i18n(key);
-            let classname = 'icon-' + key;
+            const key_i18n = i18n(key);
+            const classname = 'icon-' + key;
             children.length > count
-                // @ts-ignore
                 ? (children[count].className = classname, children[count].title = key_i18n, children[count].innerText = entities[key])
                 : this.#entities.appendChild(t(e('i .' + classname + ' title=' + key_i18n.replace(/ /g, '+')), entities[key]));
             count += 1;
         }
         for (let i = count; i < children.length; i++) {
-            // @ts-ignore
             children[i].innerText = children[i].title = children[i].className = '';
         }
         this._entities = entities;
@@ -145,23 +142,20 @@ class Item {
     }
     setLinks(links) {
         const children = this.#links.children;
-        let count = 0;
-        for (let key in links) {
+        const count = 0;
+        for (const key in links) {
             children.length > count
-                // @ts-ignore
                 ? (children[count].href = links[key], children[count].innerText = key)
                 : this.#links.appendChild(t(e('a href=' + links[key]), key));
         }
         for (let i = count; i < children.length; i++) {
-            // @ts-ignore
             children[i].innerText = children[i].href = '';
         }
         this._links = links;
     }
     constructor() {
         const activate = () => el.classList.toggle('active');
-        let el = this.element = e(' .item',
-            // @ts-ignore
+        const el = this.element = e(' .item',
             this.#mapshot = a(e('img .mapshot loading=lazy'), { 'click': activate }),
             a(e(' .info',
                 this.#title = e('span .title'),
@@ -188,6 +182,8 @@ class Item {
 }
 
 class Maps {
+    /** @type {Promise} */
+    promise;
     /** @type {MapsMeta} */
     meta;
     /** @type {number} */
@@ -213,7 +209,7 @@ class Maps {
         this.ready = false;
         this.data = [];
         this.itemPool = [];
-        let pages = e('p .pages',
+        const pages = e('p .pages',
             a(t(e('button .icon-previous'), 'previous'), {
                 'click': () => (this.get(this.index - this.mapsPerPage), window.scrollTo(0, 0))
             }, this),
@@ -224,12 +220,21 @@ class Maps {
             this.#meter = e(' .meter')
         );
         document.body.appendChild(pages);
-        this.load();
+        this.promise = new Promise(this.load.bind(this));
     }
     initMenu() {
+        const share_link_e = e('pre');
+        hiddenArea.appendChild(e('p #share-link', e('span copy-and-share-this-link'), share_link_e));
         document.querySelector('header').appendChild(e(' #menu',
+            a(t(e('button #share-button .hidden'), 'share-search-result'), {
+                'click': () => {
+                    share_link_e.innerText = location.href.slice(0, location.href.indexOf('?'))
+                        + '?filter=' + JSON.stringify(this.filterHowto);
+                    Dialog.alert('#share-link');
+                }
+            }),
             a(t(e('button'), 'search-sort-filter'), {
-                'click': this.filter
+                'click': () => Dialog.alert('#filter', this.filter.bind(this), false, 'apply')
             }, this),
             a(t(e('button'), 'random-pick'), {
                 'click': this.random
@@ -241,8 +246,8 @@ class Maps {
     }
     initFilter() {
         /** @type {FilterHowto} */
-        let f = this.filterHowto = {
-            // @ts-ignore
+        const f = this.filterHowto = {
+            // @ts-ignore: it will be fulfilled eventually
             key: 'name',
             withGametype: {}
         };
@@ -251,7 +256,7 @@ class Maps {
                 e('span sort-by-'),
                 e('span',
                     a(e('select',
-                        ...['name', 'size', 'time'].map(s => t(e('option value=' + s), s))
+                        ...['name', 'map-file-size', 'date'].map(s => t(e('option value=' + s), s))
                     ), {
                         change: ev => f.key = ev.target.value
                     }),
@@ -265,7 +270,7 @@ class Maps {
                         change: ev => (f.keyword = ev.target.value),
                     })
                 ),
-                e('span size-'),
+                e('span file-size-'),
                 e('span',
                     a(e('select',
                             t(e('option value=0,0'), 'any'),
@@ -292,9 +297,9 @@ class Maps {
                     a(e(
                             'select',
                             t(e('option value=0,0'), 'any'),
-                            t(e('option value=2,0'), 'in-0-year', [2]),
-                            t(e('option value=5,0'), 'in-0-year', [5]),
-                            t(e('option value=10,0'), 'in-0-year', [10]),
+                            t(e('option value=2,0'), 'past-0-year', [2]),
+                            t(e('option value=5,0'), 'past-0-year', [5]),
+                            t(e('option value=10,0'), 'past-0-year', [10]),
                             t(e('option value=0,10'), 'older-than-0-year', [10])
                         ),
                         {
@@ -302,9 +307,9 @@ class Maps {
                                 ([f.timeAfter, f.timeBefore] = ev.target.value
                                     .split(',')
                                     .map(s => {
-                                        let offset_year = parseInt(s);
+                                        const offset_year = parseInt(s);
                                         if (offset_year === 0) return 0;
-                                        let now = new Date();
+                                        const now = new Date();
                                         now.setFullYear(now.getFullYear() - offset_year);
                                         return (now.getTime() / 1e3) | 0;
                                     })),
@@ -327,34 +332,34 @@ class Maps {
                     e('label',
                         a(e('input type=checkbox'),{
                             change: ev =>
-                                (f.requireMapshot = ev.target.checked),
+                                (f.withMapshot = ev.target.checked),
                         }),
-                        e('span require-mapshot')
+                        e('span with-mapshot')
                     ),
                     e('label',
                         a(e('input type=checkbox'), {
                             change: ev =>
-                                (f.requireDescription = ev.target.checked),
+                                (f.withDescription = ev.target.checked),
                         }),
-                        e('span require-description')
+                        e('span with-description')
                     ),
                     e('label',
                         a(e('input type=checkbox'), {
                             change: ev =>
-                                (f.requireWaypoint = ev.target.checked),
+                                (f.withWaypoint = ev.target.checked),
                         }),
-                        e('span require-waypoint')
+                        e('span with-waypoint')
                     )
                 ),
             )
         );
     }
-    async load() {
+    load(resolve) {
         const worker = this.worker = new Worker('worker.js');
         let meta;
         this.post('loadmap', Config.load);
         worker.addEventListener('message', ev => {
-            let { type, data } = ev.data;
+            const { type, data } = ev.data;
             switch (type) {
             case 'meta':
                 this.meta = meta = data;
@@ -363,7 +368,7 @@ class Maps {
                 break;
             case 'amount':
                 if (data === 0) {
-                    for (let e of this.itemPool)
+                    for (const e of this.itemPool)
                         e.element.remove();
                     this.#pageStat.innerText = i18n('no-data');
                 }
@@ -386,6 +391,7 @@ class Maps {
             case 'ready':
                 this.meter(1);
                 this.get(0);
+                resolve();
                 break;
             }
         });
@@ -405,15 +411,15 @@ class Maps {
         this.index = at;
     }
     /** @param {MapData[]} data_list */
-    async show(data_list) {
+    show(data_list) {
         // if (at === this.index) return;
         if (data_list.length === 0) return;
         const meta = this.meta;
-        let fragment = new DocumentFragment();
+        const fragment = new DocumentFragment();
         let count = 0, map_count = 0;
         while (map_count < data_list.length) {
             /** @type {MapData} */
-            let data = data_list[map_count];
+            const data = data_list[map_count];
             if (data === undefined) break;
             for (const name in data.bsp) {
                 let item;
@@ -423,10 +429,10 @@ class Maps {
                 } else {
                     item = this.itemPool[count];
                 }
-                let bsp = data.bsp[name];
+                const bsp = data.bsp[name];
+                const links = {};
                 let gametypes = [];
                 let entities = {};
-                let links = {};
                 item.data = data;
                 item.pk3 = data.pk3;
                 item.date = new Date(data.date * 1e3);
@@ -470,7 +476,8 @@ class Maps {
     }
     filter() {
         if (!this.meta) return;
-        Dialog.alert('#filter', () => this.post('filter', this.filterHowto));
+        this.post('filter', this.filterHowto);
+        document.querySelector('#share-button').classList.remove('hidden');
     }
     random() {
         this.post('filter', { key: 'random' });
@@ -481,19 +488,26 @@ class Main {
     promise;
     maps;
     constructor() {
-        this.promise = new Promise(async (resolve) => {
+        (async () => {
             Config = await fetch('config.json').then(r => r.json());
-            let lang = navigator.language;
+            const lang = navigator.language;
             await fetch(`lang/${lang}.json`).then(r => r.json()).then(data => {
                 i18n.useLanguage(lang);
                 i18n.add(lang, data);
             }).catch(() => void 0);
-            // @ts-ignore
             document.querySelector('header>h1').innerText = i18n('xonotic-map-repo');
-            this.maps = new Maps();
-            resolve();
-        });
+            const maps = this.maps = new Maps();
+            const url = new URL(location.href);
+            await maps.promise;
+            if (url.search !== '') {
+                const json = url.searchParams.get('filter');
+                try {
+                    maps.filterHowto = JSON.parse(json);
+                    maps.filter();
+                } catch (_) { /** bad json, don't care */ }
+            }
+        })();
     }
 }
 
-var main = new Main();
+const _main = new Main();

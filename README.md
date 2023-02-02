@@ -18,11 +18,12 @@ In contrast to the Original frontend, this one have:
 - Xonotic-like style/theme, cool
 - Grid or Compact view, no more horizontal scrolling
 - Load "streamingly", Search, Sort & Filter, all being quick
+- Share a link of your filter configuration to let friends see
 
 And technically more:
 
 - No tons of "libraries" bloating the page
-- Only load about 2.3 MiB compact binary data (for ~15,000 maps), no more 9.5 MiB json (though, it *can* be used)  
+- Only load about 2.0 MiB compact binary data (for ~15,000 maps), no more 8.9 MiB json (though, it *can* be used)  
   Enabling HTTP gz/lzma compression will reduce it even more
 - I18n support available, though needs community effort
 

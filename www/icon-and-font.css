@@ -9,7 +9,7 @@
 *[class^="icon-"]::before,
 *[class^="icon-"]::after {
     /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'icomoon', 'Xolonium', 'SimKai' !important;
+    font-family: 'icomoon', 'Xolonium', 'TH-Khaai-PP0', 'TH-Khaai-TP0', '楷体', 'SimKai', 'TsangerYuYangT', serif !important;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;

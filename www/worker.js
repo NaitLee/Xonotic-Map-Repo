@@ -6,7 +6,7 @@
  */
 function correctMeta(meta, ...keys) {
     for (const key of keys) {
-        let b = {};
+        const b = {};
         for (const k in meta[key]) {
             b[meta[key][k]] = k;
         }
@@ -23,7 +23,7 @@ class Binary extends DataView {
     signed;
     littleEndian;
     constructor(size) {
-        let buffer = new ArrayBuffer(size);
+        const buffer = new ArrayBuffer(size);
         super(buffer); // new DataView(this.buffer);
         this.buffer = buffer;
         this.array = new Uint8Array(this.buffer);
@@ -39,7 +39,7 @@ class Binary extends DataView {
         }
     }
     get(size = 4, float = false, signed = this.signed) {
-        let pointer = this.pointer;
+        const pointer = this.pointer;
         if (pointer >= this.available)
             throw new Error('Unavailable');
         this.pointer += size;
@@ -58,15 +58,15 @@ class Binary extends DataView {
     getchunk(offset) {
         if (offset >= this.available)
             throw new Error(`Unavailable: needs ${offset}, have ${this.available}`);
-        let length = this.getUint16(offset + 1, this.littleEndian);
+        const length = this.getUint16(offset + 1, this.littleEndian);
         if (offset + length >= this.available)
             throw new Error(`Unavailable: needs ${offset + length}, have ${this.available}`);
         // this.seek(offset);
-        let data = this.array.subarray(offset + 3, offset + length + 3);
+        const data = this.array.subarray(offset + 3, offset + length + 3);
         return data;
     }
     seek(offset, whence = 0) {
-        let pointer = whence === 0 ? offset : this.pointer + offset;
+        const pointer = whence === 0 ? offset : this.pointer + offset;
         if (pointer >= this.available)
             throw new Error(`Unavailable: needs ${pointer}, have ${this.available}`);
         this.pointer = pointer;
@@ -84,7 +84,7 @@ class MapLoader {
     filteredOrder;
     constructor() {
         self.addEventListener('message', ev => {
-            let { type, data } = ev.data;
+            const { type, data } = ev.data;
             switch (type) {
             case 'loadmap':
                 this.load(data);
@@ -107,10 +107,10 @@ class MapLoader {
     }
     async load({ meta_url, data1_url, data2_url, maps_json }) {
         /** @type {MapsMeta} */
-        let meta = await fetch(meta_url).then(r => r.json());
+        const meta = await fetch(meta_url).then(r => r.json());
         correctMeta(meta, 'bspkeys', 'datakeys', 'datatype', 'entity');
         this.meta = meta;
-        this.filteredOrder = this.order = new Array();
+        this.filteredOrder = this.order = [];
         this.post('meta', meta);
         if (maps_json) {
             this.data = await fetch(maps_json).then(r => r.json()).then(j => j.data);
@@ -123,15 +123,15 @@ class MapLoader {
         /** @type {MapData[]} */
         const data_list = this.data = [];
         let count = 0, error_count = 0;
-        let reader1 = (await fetch(data1_url).then(r => r.body)).getReader();
-        let reader2 = (await fetch(data2_url).then(r => r.body)).getReader();
+        const reader1 = (await fetch(data1_url).then(r => r.body)).getReader();
+        const reader2 = (await fetch(data2_url).then(r => r.body)).getReader();
         const bin1 = new Binary(meta.data1size);
         const bin2 = new Binary(meta.data2size);
         bin1.signed = bin2.signed = false;
         let threshold = 128 * 1024;
         /** @type {(buffer: Uint8Array) => string} */
         const utf8 = (function() {
-            let decoder = new TextDecoder();
+            const decoder = new TextDecoder();
             return buffer => decoder.decode(buffer, { stream: true });
         })();
         const string_here = () => utf8(bin2.getchunk(bin1.get(4)));
@@ -161,7 +161,7 @@ class MapLoader {
         bin1.pointer = anchor1;
         while (count < meta.amount) {
             try {
-                let data = new_data();
+                const data = new_data();
                 anchor1 = bin1.pointer;
                 let k1, k2, mark2, string, bsp_name, entities;
                 let current_bsp;
@@ -228,7 +228,7 @@ class MapLoader {
             } catch (err) {
                 error_count += 1;
                 if (error_count >= 64) {
-                    let fatal = new Error(`Got ${error_count} failures, giving up.\nLast error:\n${err}`);
+                    const fatal = new Error(`Got ${error_count} failures, giving up.\nLast error:\n${err}`);
                     this.post('error', fatal.message);
                     throw fatal;
                 }
@@ -236,8 +236,8 @@ class MapLoader {
                     (bin1.available < anchor1 + threshold) &&
                     (bin1.available < meta.data1size || bin2.available < meta.data2size)
                 ) {
-                    let result1 = await reader1.read();
-                    let result2 = await reader2.read();
+                    const result1 = await reader1.read();
+                    const result2 = await reader2.read();
                     if (!result1.done && result1.value) bin1.expand(result1.value);
                     if (!result2.done && result2.value) bin2.expand(result2.value);
                 }
@@ -258,7 +258,7 @@ class MapLoader {
             done = 0;
         let mask = 0;
         if (typeof howto.withGametype === 'object')
-            for (let x of Object.values(howto.withGametype))
+            for (const x of Object.values(howto.withGametype))
                 mask |= x;
         if (mask === 0) jobs -= 1;
         
@@ -287,21 +287,21 @@ class MapLoader {
             order = order.filter(n => this.data[n].date >= howto.timeAfter), report();
         if (howto.timeBefore)
             order = order.filter(n => this.data[n].date <= howto.timeBefore), report();
-        if (howto.requireMapshot)
+        if (howto.withMapshot)
             order = order.filter(n => {
                 const bsps = this.data[n].bsp;
                 for (const key in bsps)
                     if (bsps[key].mapshot) return true;
                 return false;
             }), report();
-        if (howto.requireDescription)
+        if (howto.withDescription)
             order = order.filter(n => {
                 const bsps = this.data[n].bsp;
                 for (const key in bsps)
                     if (bsps[key].description) return true;
                 return false;
             }), report();
-        if (howto.requireWaypoint)
+        if (howto.withWaypoint)
             order = order.filter(n => {
                 const bsps = this.data[n].bsp;
                 for (const key in bsps)
@@ -325,11 +325,9 @@ class MapLoader {
             break;
         case 'name':
             this.filteredOrder.sort((a, b) => {
-                let d1 = this.data[a],
-                    d2 = this.data[b];
-                let b1 = Object.keys(d1.bsp)[0], b2 = Object.keys(d2.bsp)[0];
-                let s1 = d1.bsp[b1].title || b1 || d1.pk3,
-                    s2 = d2.bsp[b2].title || b2 || d2.pk3;
+                const d1 = this.data[a], d2 = this.data[b];
+                const b1 = Object.keys(d1.bsp)[0], b2 = Object.keys(d2.bsp)[0];
+                const s1 = d1.bsp[b1].title || b1 || d1.pk3, s2 = d2.bsp[b2].title || b2 || d2.pk3;
                 return collator.compare(s1.toLocaleLowerCase(), s2.toLocaleLowerCase());
             });
             break;

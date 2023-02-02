@@ -6,4 +6,4 @@ backup
 maps-.tar.gz
 maps-data*.bin
 maps-meta.json
-maps.json
+maps*.json
