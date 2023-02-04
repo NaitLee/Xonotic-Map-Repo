@@ -1,7 +1,7 @@
 
 # Xonotic Map Repo
 
-*A (much) better Web frontend for the community [Xonotic Map Repository](https://github.com/z/xonotic-map-repository)*
+*A (much) better Web interface for the community [Xonotic Map Repository](https://github.com/z/xonotic-map-repository)*
 
 ## Intro
 

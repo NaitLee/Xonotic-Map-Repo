@@ -67,6 +67,6 @@ type FilterHowto = {
     withWaypoint?: boolean,
     withDescription?: boolean,
     withGametype?: Record<string, number>,
-    key?: 'name' | 'size' | 'time' | 'random',
+    key?: 'name' | 'size' | 'date' | 'random',
     invert?: boolean,
 }

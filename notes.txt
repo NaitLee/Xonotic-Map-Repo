@@ -20,11 +20,8 @@ Some (currently) unavailable gamemodes, and unknown/little entities, are omitted
 You can see them by removing from blacklist. See what do the entries mean in translation file `www/lang/en-US.json`
 
 The frontend code isn't well made. At the time of coding I'm trying out the React.js way of doing interface,
-thus didn't consider (good) traditional practice.
-This isn't a big project, though. Please ignore that.
-
-These JavaScripts are coded with the Deno VSCode extension enabled.
-VSCode default linter may have different behavior on them.
+thus didn't follow traditional practice (that is actually better).
+This isn't a big project, though. Please ignore that :P
 
 Translation files are in `www/lang`.
 And edit `www/i18n-ext.js` to fit grammar request.

@@ -1,5 +1,6 @@
 
 // rough script for taking some translations from official source
+// for some reasons I shouldn't do this behalf you. run this with Deno
 
 const xondatadir = Deno.args[0];
 
@@ -10,7 +11,7 @@ if (xondatadir === undefined) {
 }
 
 // en_US is source; zh will be manually managed and converted
-const blacklist_lang = new Set(['en_US', 'zh_CN', 'zh_HK', 'zh_TW']);
+const blacklist_lang = new Set(['en_US', 'zh_CN', 'zh_HK', 'zh_TW', 'zh_hant', 'zh_CN_hant']);
 const languages = [];
 
 function trimstr(str: string, start: string, end: string) {

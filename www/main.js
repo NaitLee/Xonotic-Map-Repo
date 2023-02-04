@@ -181,9 +181,7 @@ class Item {
     }
 }
 
-class Maps {
-    /** @type {Promise} */
-    promise;
+class Main {
     /** @type {MapsMeta} */
     meta;
     /** @type {number} */
@@ -209,20 +207,18 @@ class Maps {
         this.ready = false;
         this.data = [];
         this.itemPool = [];
-        const pages = e('p .pages',
-            a(t(e('button .icon-previous'), 'previous'), {
-                'click': () => (this.get(this.index - this.mapsPerPage), window.scrollTo(0, 0))
-            }, this),
-            this.#pageStat = t(e('span .pagestat'), 'loading'),
-            a(t(e('button .icon-next'), 'next'), {
-                'click': () => (this.get(this.index + this.mapsPerPage), window.scrollTo(0, 0))
-            }, this),
-            this.#meter = e(' .meter')
-        );
-        document.body.appendChild(pages);
-        this.promise = new Promise(this.load.bind(this));
+        this.load().then(() => {
+            const url = new URL(location.href);
+            if (url.search === '') return;
+            try {
+                const json = url.searchParams.get('filter');
+                maps.filterHowto = JSON.parse(json);
+                maps.filter();
+            } catch (_) { /** bad json, don't care */ }
+        });
     }
     initMenu() {
+        document.querySelector('header>h1').innerText = i18n('xonotic-map-repo');
         const share_link_e = e('pre');
         hiddenArea.appendChild(e('p #share-link', e('span copy-and-share-this-link'), share_link_e));
         document.querySelector('header').appendChild(e(' #menu',
@@ -243,6 +239,16 @@ class Maps {
                 'click': () => this.view.classList.toggle('active')
             })
         ));
+        document.body.appendChild(e('p .pages',
+            a(t(e('button .icon-previous'), 'previous'), {
+                'click': () => (this.get(this.index - this.mapsPerPage), window.scrollTo(0, 0))
+            }, this),
+            this.#pageStat = t(e('span .pagestat'), 'loading'),
+            a(t(e('button .icon-next'), 'next'), {
+                'click': () => (this.get(this.index + this.mapsPerPage), window.scrollTo(0, 0))
+            }, this),
+            this.#meter = e(' .meter')
+        ));
     }
     initFilter() {
         /** @type {FilterHowto} */
@@ -256,7 +262,9 @@ class Maps {
                 e('span sort-by-'),
                 e('span',
                     a(e('select',
-                        ...['name', 'map-file-size', 'date'].map(s => t(e('option value=' + s), s))
+                        e('option value=name name'),
+                        e('option value=size map-file-size'),
+                        e('option value=date date')
                     ), {
                         change: ev => f.key = ev.target.value
                     }),
@@ -354,8 +362,22 @@ class Maps {
             )
         );
     }
-    load(resolve) {
+    async initI18n() {
+        if (!i18n) return;
+        const langs = navigator.languages.slice(0, 2).concat(['en-US']);
+        i18n.useLanguage(langs[0]);
+        for (const lang of langs)
+            await fetch(`lang/${lang}.json`)
+                .then(r => r.json())
+                .then(data => i18n.add(lang, data))
+                .catch(() => void 0);
+    }
+    async load() {
+        let resolve;
+        const promise = new Promise(r => resolve = r);
+        Config = await fetch('config.json').then(r => r.json());
         const worker = this.worker = new Worker('worker.js');
+        const promise_i18n = new Promise(resolve => { this.initI18n().then(() => resolve()) });
         let meta;
         this.post('loadmap', Config.load);
         worker.addEventListener('message', ev => {
@@ -363,8 +385,10 @@ class Maps {
             switch (type) {
             case 'meta':
                 this.meta = meta = data;
-                this.initMenu();
-                this.initFilter();
+                promise_i18n.then(() => {
+                    this.initMenu();
+                    this.initFilter();
+                });
                 break;
             case 'amount':
                 if (data === 0) {
@@ -395,6 +419,7 @@ class Maps {
                 break;
             }
         });
+        return promise;
     }
     post(type, data) {
         this.worker.postMessage({ type, data });
@@ -481,32 +506,6 @@ class Maps {
     }
     random() {
         this.post('filter', { key: 'random' });
-    }
-}
-
-class Main {
-    promise;
-    maps;
-    constructor() {
-        (async () => {
-            Config = await fetch('config.json').then(r => r.json());
-            const lang = navigator.language;
-            await fetch(`lang/${lang}.json`).then(r => r.json()).then(data => {
-                i18n.useLanguage(lang);
-                i18n.add(lang, data);
-            }).catch(() => void 0);
-            document.querySelector('header>h1').innerText = i18n('xonotic-map-repo');
-            const maps = this.maps = new Maps();
-            const url = new URL(location.href);
-            await maps.promise;
-            if (url.search !== '') {
-                const json = url.searchParams.get('filter');
-                try {
-                    maps.filterHowto = JSON.parse(json);
-                    maps.filter();
-                } catch (_) { /** bad json, don't care */ }
-            }
-        })();
     }
 }
 

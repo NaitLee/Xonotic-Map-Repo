@@ -334,7 +334,7 @@ class MapLoader {
         case 'size':
             this.filteredOrder.sort((a, b) => this.data[a].filesize - this.data[b].filesize);
             break;
-        case 'time':
+        case 'date':
             this.filteredOrder.sort((a, b) => this.data[a].date - this.data[b].date);
             break;
         }
@@ -347,4 +347,4 @@ class MapLoader {
     }
 }
 
-var loader = new MapLoader();
+const _loader = new MapLoader();
