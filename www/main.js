@@ -209,11 +209,12 @@ class Main {
         this.itemPool = [];
         this.load().then(() => {
             const url = new URL(location.href);
-            if (url.search === '') return;
+            const hash = decodeURIComponent(location.hash.slice(1));
+            if (url.search === '' && hash === '') return;
             try {
-                const json = url.searchParams.get('filter');
-                maps.filterHowto = JSON.parse(json);
-                maps.filter();
+                const json = hash || url.searchParams.get('filter');
+                Object.assign(this.filterHowto, JSON.parse(json));
+                this.filter();
             } catch (_) { /** bad json, don't care */ }
         });
     }
@@ -224,8 +225,7 @@ class Main {
         document.querySelector('header').appendChild(e(' #menu',
             a(t(e('button #share-button .hidden'), 'share-search-result'), {
                 'click': () => {
-                    share_link_e.innerText = location.href.slice(0, location.href.indexOf('?'))
-                        + '?filter=' + JSON.stringify(this.filterHowto);
+                    share_link_e.innerText = decodeURIComponent(location.href);
                     Dialog.alert('#share-link');
                 }
             }),
@@ -503,6 +503,7 @@ class Main {
         if (!this.meta) return;
         this.post('filter', this.filterHowto);
         document.querySelector('#share-button').classList.remove('hidden');
+        location.hash = JSON.stringify(this.filterHowto);
     }
     random() {
         this.post('filter', { key: 'random' });
