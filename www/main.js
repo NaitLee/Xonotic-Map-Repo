@@ -191,7 +191,7 @@ class Main {
     // No "odd" lines in layout with 2, 3, 4, 5, or 6 items in one row
     mapsPerPage = 3 * 4 * 5;
     /** @type {HTMLElement} */
-    #pageStat
+    #pageStat;
     /** @type {HTMLElement} */
     #meter;
     /** @type {HTMLElement} */
@@ -378,23 +378,27 @@ class Main {
         Config = await fetch('config.json').then(r => r.json());
         const worker = this.worker = new Worker('worker.js');
         const promise_i18n = new Promise(resolve => { this.initI18n().then(() => resolve()) });
+        let interface_ok = false;
         let meta;
         this.post('loadmap', Config.load);
         worker.addEventListener('message', ev => {
             const { type, data } = ev.data;
-            switch (type) {
-            case 'meta':
+            if (type === 'meta') {
                 this.meta = meta = data;
                 promise_i18n.then(() => {
                     this.initMenu();
                     this.initFilter();
+                    interface_ok = true;
                 });
-                break;
+                return;
+            }
+            switch (type) {
             case 'amount':
                 if (data === 0) {
                     for (const e of this.itemPool)
                         e.element.remove();
-                    this.#pageStat.innerText = i18n('no-data');
+                    if (interface_ok)
+                        this.#pageStat.innerText = i18n('no-data');
                 }
                 this.amount = data;
                 break;
@@ -407,7 +411,7 @@ class Main {
                 this.meter(data);
                 break;
             case 'data':
-                this.show(data);
+                promise_i18n.then(_ => this.show(data));
                 break;
             case 'error':
                 Dialog.alert(data.toString(), null, true);
