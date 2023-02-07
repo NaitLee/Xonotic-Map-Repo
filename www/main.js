@@ -219,7 +219,7 @@ class Main {
         });
     }
     initMenu() {
-        document.querySelector('header>h1').innerText = i18n('xonotic-map-repo');
+        document.querySelector('header>h1').innerText = document.querySelector('title').innerText = i18n('xonotic-map-repo');
         const share_link_e = e('pre');
         hiddenArea.appendChild(e('p #share-link', e('span copy-and-share-this-link'), share_link_e));
         document.querySelector('header').appendChild(e(' #menu',
@@ -496,6 +496,7 @@ class Main {
         }
     }
     meter(rate) {
+        if (!this.#meter) return;
         this.#meter.style.width = rate * 100 + '%';
         this.#meter.dataset.full = rate === 1 ? '1' : '0';
     }
