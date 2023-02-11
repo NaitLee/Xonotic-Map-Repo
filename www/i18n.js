@@ -46,10 +46,10 @@ class I18n {
     add(language, data, override = false) {
         if (!this.database[language])
             this.database[language] = {};
-        for (let key in data) {
-            let value = data[key];
+        for (const key in data) {
+            const value = data[key];
             this.database[language][key] = value;
-            for (let lang in this.database)
+            for (const lang in this.database)
                 if (override || !this.database[lang][key])
                     this.database[lang][key] = value;
         }
@@ -67,8 +67,8 @@ class I18n {
      * @param {DictOf<Languages>} aliases 
      */
     alias(aliases) {
-        for (let alt_code in aliases) {
-            let code = aliases[alt_code];
+        for (const alt_code in aliases) {
+            const code = aliases[alt_code];
             this.database[alt_code] = this.database[code];
             this.extensions[alt_code] = this.extensions[code];
         }
@@ -79,12 +79,15 @@ class I18n {
      * @param {Things} things
      */
     translate(text, things) {
-        let conditions = this.database[this.language][text] || text;
+        if (!text) return '';
+        const conditions = this.database[this.language][text] || text;
         if (!things) return conditions;
         if (this.extensions[this.language])
             text = this.extensions[this.language](things, conditions);
         else text = conditions;
-        for (let key in things) {
+        if (typeof text === 'object')
+            text = Object.entries(text)[0][1];
+        for (const key in things) {
             text = text.replace(`{${key}}`, things[key].toString());
         }
         return text;
@@ -95,22 +98,23 @@ class I18n {
  * An i18n instance that is directly callable
  * @type {I18nCallable}
  */
+// deno-lint-ignore no-var
 var i18n = (function() {
 
-    let instance = new I18n();
+    const instance = new I18n();
 
     /**
      * @param {string} text
      * @param {Things} things 
      */
-    let i18n_callable = function(text, things) {
+    const i18n_callable = function(text, things) {
         return instance.translate.call(i18n_callable, text, things);
     }
 
     Object.setPrototypeOf(i18n_callable, instance);
 
     if (typeof I18nExtensions === 'object') {
-        for (let key in I18nExtensions)
+        for (const key in I18nExtensions)
             instance.extend(key, I18nExtensions[key]);
     }
 

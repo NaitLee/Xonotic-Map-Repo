@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-var
 `
 No rights reserved.
 
@@ -9,6 +10,7 @@ License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
 var I18nExtensions = (function() {
 
     var registers = {
+        'en': English,
         'en-US': English,
         'zh-CN': Chinese,
     };
@@ -19,8 +21,8 @@ var I18nExtensions = (function() {
     function English(things, conditions) {
         if (typeof conditions === 'string')
             return conditions;
-        for (let key in things) {
-            let value = things[key];
+        for (const key in things) {
+            const value = things[key];
             if (typeof value === 'number') {
                 if (conditions['nth']) {
                     if (value < 10 || value > 20) {
