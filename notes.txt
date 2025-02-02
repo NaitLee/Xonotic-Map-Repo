@@ -13,14 +13,14 @@ I'm thinking about "integration" mode, more in todo.txt, in which a local server
 
 The frontend have a config file: `www/config.json`
 Inside you can config Upstream, i.e. a backend that gives Mapshots & Downloads etc.
-The default choice is http://xonotic.fps.gratis/. But everyone is free to host an instance: https://github.com/z/xonotic-map-repository
-The problem is how one can get all of the community maps downloaded.
+The default choice is https://xonotic.fps.gratis/. But everyone is free to host an instance: https://github.com/z/xonotic-map-repository
+The problem is how one can scrap all the community maps.
 Besides that, there are entity "blacklists" for omitting "senseless" things.
-Some (currently) unavailable gamemodes, and unknown/little entities, are omitted by default.
+A few of obsolete gamemodes, and unknown/little entities, are omitted by default.
 You can see them by removing from blacklist. See what do the entries mean in translation file `www/lang/en-US.json`
 
 The frontend code isn't well made. At the time of coding I'm trying out the React.js way of doing interface,
-thus didn't follow traditional practice (that is actually better).
+thus didn't follow traditional practice (that is actually better for this case).
 This isn't a big project, though. Please ignore that :P
 
 Translation files are in `www/lang`.

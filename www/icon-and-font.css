@@ -55,11 +55,13 @@
 }
 
 /* appeared in code but no definition here */
+/*
 .icon-world,
 .icon-gametype_arena,
 .icon-item_invincible {
     display: none;
 }
+*/
 
 .icon-info_player_team1::before,
 .icon-info_player_team2::before,

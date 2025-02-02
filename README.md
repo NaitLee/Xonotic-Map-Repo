@@ -7,9 +7,9 @@
 
 I'm playing [Xonotic](https://xonotic.org/) and I liked it. So that I want more maps.
 
-Seeking around, I've found a community repo: [http://xonotic.fps.gratis](http://xonotic.fps.gratis). (Caution: the page loads a lot of data)
+Seeking around, I've found a community repo: [http://xonotic.fps.gratis](http://xonotic.fps.gratis). (Note: the page loads a lot of data)
 
-Great work! A large amount of maps are collected, but the browsing experience isn't satisfying. So let me follow it up.
+Great work! A large amount of maps are collected, but the browsing experience isn't satisfying. Let me try to make one.
 
 ## What's good about
 
@@ -17,13 +17,13 @@ In contrast to the Original frontend, this one have:
 
 - Xonotic-like style/theme, cool
 - Grid or Compact view, no more horizontal scrolling
-- Load "streamingly", Search, Sort & Filter, all being quick
-- Share a link of your filter configuration to let friends see
+- Loading, Search, Sort & Filter, all being quick
+- Share a link of your filter configuration to your friends
 
 And technically more:
 
 - No tons of "libraries" bloating the page
-- Only load about 2.0 MiB compact binary data (for ~15,000 maps), no more 8.9 MiB json (though, it *can* be used)  
+- Only load about 2.0 MiB compact binary data (for ~15,000 maps), no more 8.9 MiB json (it *may* be used if required)  
   Enabling HTTP gz/lzma compression will reduce it even more
 - I18n support available, though needs community effort
 
@@ -38,7 +38,7 @@ The Easy route: well, wait for this to be hosted somewhere
 The Dev's route:
 
 0. Clone this repository, `cd` to it
-1. Fetch the `maps.json` from Upstream: [http://xonotic.fps.gratis/maps.json](http://xonotic.fps.gratis/maps.json)  
+1. Fetch the `maps.json` from Upstream: [https://xonotic.fps.gratis/maps.json](https://xonotic.fps.gratis/maps.json)  
   Put to this directory
 2. With [Golang](https://go.dev/) installed, run `go build` in terminal
 3. Run the built executable to convert json to binary format:  
@@ -53,8 +53,6 @@ The Dev's route:
 
 ## License
 
-Copyright © 2022 NaitLee Soft. Some rights reserved.
-
 This project as a whole is licensed under MIT/Expat License, as in `LICENSE`.
 
 For individual JavaScript files, see `www/jslicense.html`.
@@ -63,6 +61,6 @@ In `www/fonts/`, the Xolonium font is released under GPL-2-or-later with embeddi
 
 ## Thanks
 
-- @z for his work on a community repository, and keep hosting it
+- @-z- for his work on a community repository, and keep hosting it
 - Every map makers & game contributors, and the awesome game
 - The spirit of Software Freedom and Software Minimalism

@@ -1,7 +1,7 @@
 {
     "upstream": {
-        "mapshots": "http://xonotic.fps.gratis/resources/mapshots/",
-        "download": "http://dl.xonotic.fps.gratis/"
+        "mapshots": "https://xonotic.fps.gratis/resources/mapshots/",
+        "download": "https://dl.xonotic.fps.gratis/"
     },
     "load": {
         "meta_url": "maps-meta.json",
@@ -34,15 +34,7 @@
     ],
     "gamemode_blacklist": [
         "all",
-        "arena",
-        "cq",
-        "dotc",
         "inf",
-        "jb",
-        "ph",
-        "rune",
-        "snafu",
-        "td",
-        "vip"
+        "td"
     ]
 }
